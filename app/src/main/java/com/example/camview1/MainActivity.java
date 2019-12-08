@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     }
     protected  void onStart() {
         super.onStart();
-        tab1_fragment.onCreate(null);
         tabs_callback.onTabSelected(tab3);
         tabs_callback.onTabSelected(tab2);
         tabs_callback.onTabSelected(tab1);
