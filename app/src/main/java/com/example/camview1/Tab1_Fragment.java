@@ -27,13 +27,28 @@ public class Tab1_Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(!firstcreated){
             view = inflater.inflate(R.layout.tab1_fragment,container,false);
-            Button button_for_Fragment2 = view.findViewById(R.id.button5);
-            button_for_Fragment2.setOnClickListener(new View.OnClickListener() {
+            Button button_for_interrupt = view.findViewById(R.id.button5);
+            Button button_to_start_mThread = view.findViewById(R.id.button6);
+            button_for_interrupt.setText(Thread.currentThread().getName());
+            button_for_interrupt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ((MainActivity) Objects.requireNonNull(getActivity())).setTab2Text();
+                    try {
+                        ((MainActivity) Objects.requireNonNull(getActivity())).interrupt_cameraService_mThread();
+                    }catch (Exception e){
+                        ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment(e.toString());
+                    }
                 }
             });
+            button_to_start_mThread.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ((MainActivity) Objects.requireNonNull(getActivity())).startCameraService_mThread();
+                }
+            });
+            ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment(Thread.currentThread().getName()+" :onCreateView Tab1_Fragment");
             firstcreated=true;
         }
         return view;

@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
+
 public class Tab2_Fragment extends Fragment {
     private TextView text;
     private View view;
@@ -27,6 +29,7 @@ public class Tab2_Fragment extends Fragment {
         if(!firstcreated){
             view = inflater.inflate(R.layout.tab2_fragment,container,false);
             text=view.findViewById(R.id.tab2_text);
+            ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment(Thread.currentThread().getName()+" :onCreateView Tab2_Fragment");
             firstcreated=true;
         }
         return view;
