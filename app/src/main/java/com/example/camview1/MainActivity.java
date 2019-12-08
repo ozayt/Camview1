@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         public void onTabReselected(TabLayout.Tab tab) {
         }
     };
-    void setTab2Text(String str){
-        tab2_fragment.setText(str);
+    void setTab2Text(){
+        tab2_fragment.setText();
     }
 }

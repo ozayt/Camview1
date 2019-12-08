@@ -1,5 +1,6 @@
 package com.example.camview1;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +31,8 @@ public class Tab2_Fragment extends Fragment {
         }
         return view;
     }
-    void setText(String str){
-        text.setText(str);
+    @SuppressLint("SetTextI18n")
+    void setText(){
+        text.setText("Tab 2 text is set now ");
     }
-
-
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putString("TEXT",text.getText().toString());
-//    }
 }
