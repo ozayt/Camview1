@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+import android.hardware.camera2.CameraCharacteristics;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,11 +40,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         handler = new MainHandler(new MainHandler.MsgReadyListener() {
             @Override
-            public void onMsgReady(String msg) {
-                append_to_tab3_fragment(msg);
+            public void onMsgReady(Message msg) {
+                if(msg.what==MainHandler.STRING) {
+                    String message = (String) msg.obj; //Extract the string from the Message
+                    append_to_tab3_fragment(message);
+                }else if(msg.what==MainHandler.CameraCharacteristics){
+                    tab2_fragment.prepare_frag2((CameraCharacteristics)msg.obj);
+                }
             }
         });
-        cameraService = new CameraService(handler);
+        cameraService = new CameraService(handler,this);
         setContentView(R.layout.activity_main);
         nested_view=findViewById(R.id.nestedview);
         //TABS
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         tabs_callback.onTabSelected(tab2);
         tabs_callback.onTabSelected(tab1);
         //Calling camera service here
-        startCameraService_mThread();
+
     }
     TabLayout.OnTabSelectedListener tabs_callback = new TabLayout.OnTabSelectedListener() {
         @Override
@@ -113,25 +119,27 @@ public class MainActivity extends AppCompatActivity {
     void setTab2Text(){
         tab2_fragment.setText();
     }
-    private static class MainHandler extends Handler{
+    public static class MainHandler extends Handler{
         MsgReadyListener lst;
         MainHandler(MainHandler.MsgReadyListener listener){
             lst=listener;
         }
+        public static final int STRING = 0;
+        public static final int CameraCharacteristics = 1 ;
         public interface MsgReadyListener{
             /**
              * @param msg incoming msg
              */
-            void onMsgReady(String msg);
+            void onMsgReady(Message msg);
             }
         public void handleMessage(Message msg) {
-            String message = (String) msg.obj; //Extract the string from the Message
-            lst.onMsgReady(message);
+            lst.onMsgReady(msg);
         }
 
     }
     void startCameraService_mThread(){
         cameraService.start_mThread();
+        cameraService.open_Camera(0);
     }
     void append_to_tab3_fragment(String msg){
         tab3_fragment.appendMsg(msg);

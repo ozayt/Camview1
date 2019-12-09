@@ -1,5 +1,7 @@
 package com.example.camview1;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,8 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.Objects;
@@ -29,7 +33,8 @@ public class Tab1_Fragment extends Fragment {
             view = inflater.inflate(R.layout.tab1_fragment,container,false);
             Button button_for_interrupt = view.findViewById(R.id.button5);
             Button button_to_start_mThread = view.findViewById(R.id.button6);
-            button_for_interrupt.setText(Thread.currentThread().getName());
+            button_for_interrupt.setText("Kill Background");
+            button_to_start_mThread.setText("Start mThread");
             button_for_interrupt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -44,8 +49,14 @@ public class Tab1_Fragment extends Fragment {
             button_to_start_mThread.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    ((MainActivity) Objects.requireNonNull(getActivity())).startCameraService_mThread();
+                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // Permission is not granted
+                        ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment("Asking for permission");
+                        ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CAMERA},0 );
+                    }else {
+                        ((MainActivity) Objects.requireNonNull(getActivity())).startCameraService_mThread();
+                    }
                 }
             });
             ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment(Thread.currentThread().getName()+" :onCreateView Tab1_Fragment");
