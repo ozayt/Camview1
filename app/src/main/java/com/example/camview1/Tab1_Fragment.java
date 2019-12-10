@@ -33,8 +33,11 @@ public class Tab1_Fragment extends Fragment {
             view = inflater.inflate(R.layout.tab1_fragment,container,false);
             final Button button_for_interrupt = view.findViewById(R.id.button5);
             final Button button_to_start_mThread = view.findViewById(R.id.button6);
+            final Button button7 = view.findViewById(R.id.button7);
+
             button_for_interrupt.setText("Kill Background");
             button_to_start_mThread.setText("Start mThread");
+
             button_for_interrupt.setEnabled(false);
             button_for_interrupt.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -65,7 +68,14 @@ public class Tab1_Fragment extends Fragment {
                     }
                 }
             });
+            button7.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
             ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment(Thread.currentThread().getName()+" :onCreateView Tab1_Fragment");
+
             firstcreated=true;
         }
         return view;

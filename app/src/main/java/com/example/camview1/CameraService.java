@@ -29,6 +29,7 @@ class CameraService {
     public CameraDevice cameraDevice;
     private Handler back_handler;
     private Object lock = new Object();
+
     CameraService(Handler hnd, Context cnt) {
         ui_handler = hnd;
         mContext = cnt;

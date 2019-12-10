@@ -28,6 +28,7 @@ public class Tab2_Fragment extends Fragment {
     private boolean cameraChar_is_inLayout =false;
     private List<CameraCharacteristics.Key> raw_char_keys;
     private List<String> avaible_types_string = new ArrayList<String>();
+    private Object[][] dev_dir;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,10 +56,16 @@ public class Tab2_Fragment extends Fragment {
 
     void set_frag2_CameraCharacteristics(CameraCharacteristics cam){
         this.cameraChar = cam;
+        raw_char_keys = new ArrayList<CameraCharacteristics.Key>();
+        for (CameraCharacteristics.Key<?> key :cameraChar.getKeys()) {
+            raw_char_keys.add(key);
+        }
+        //scan dir
+//        scan_dir(raw_char_keys);
     }
     private void addto_linearLayout(List<CameraCharacteristics.Key<?>> keys){
 
-        raw_char_keys = new ArrayList<CameraCharacteristics.Key>();
+
         int j = 0;
         for (CameraCharacteristics.Key<?> key :keys) {
                 if(((MainActivity)getContext())!=null) {
@@ -67,7 +74,7 @@ public class Tab2_Fragment extends Fragment {
                     btnTag.setText(key.toString());
                     btnTag.setId(j);
                     linearLayout.addView(btnTag);
-                    raw_char_keys.add(key);
+
                     final int finalJ = j;
                     Class<?> c =cameraChar.get((raw_char_keys.get(finalJ))).getClass();
                     if(!avaible_types_string.contains(c.toString())){
@@ -105,8 +112,6 @@ public class Tab2_Fragment extends Fragment {
                             }
                             if(cameraChar_is_inLayout){
                                 cameraChar_is_inLayout =false;}
-
-
                         }
                     });
                     j++;
@@ -116,6 +121,11 @@ public class Tab2_Fragment extends Fragment {
         for(String str: avaible_types_string){
             text.append(" "+str);
         }
-
+    }
+    void scan_dir(List<CameraCharacteristics.Key> list){
+        for (CameraCharacteristics.Key element : list){
+            String string = element.toString();
+//            string.
+        }
     }
 }
