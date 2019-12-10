@@ -10,7 +10,7 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.MotionEvent;
+
 import android.view.View;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
     TabLayout.Tab currentTab;
     FloatingActionButton floatbutton;
+    private int pos=1;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -45,11 +46,11 @@ public class MainActivity extends AppCompatActivity {
                     String message = (String) msg.obj; //Extract the string from the Message
                     append_to_tab3_fragment(message);
                 }else if(msg.what==MainHandler.CameraCharacteristics){
-                    tab2_fragment.prepare_frag2((CameraCharacteristics)msg.obj);
+                    tab2_fragment.set_frag2_CameraCharacteristics((CameraCharacteristics)msg.obj); // Extract CameraCharacteristics from msg
                 }
             }
         });
-        cameraService = new CameraService(handler,this);
+//        cameraService = new CameraService(handler,this);
         setContentView(R.layout.activity_main);
         nested_view=findViewById(R.id.nestedview);
         //TABS
@@ -65,13 +66,16 @@ public class MainActivity extends AppCompatActivity {
         tab3_fragment = new Tab3_Fragment();
         appBarLayout= findViewById(R.id.appbar);
         floatbutton=findViewById(R.id.floatbutton);
-        floatbutton.setOnTouchListener(floatbutton_listener);
+        floatbutton.setOnClickListener(floatbutton_listener);
+        floatbutton.setClickable(true);
     }
     protected  void onStart() {
         super.onStart();
-        tabs_callback.onTabSelected(tab3);
-        tabs_callback.onTabSelected(tab2);
-        tabs_callback.onTabSelected(tab1);
+        if(currentTab==null) {
+            tabs_callback.onTabSelected(tab3);
+            tabs_callback.onTabSelected(tab2);
+            tabs_callback.onTabSelected(tab1);
+        }
         //Calling camera service here
 
     }
@@ -104,21 +108,18 @@ public class MainActivity extends AppCompatActivity {
         public void onTabReselected(TabLayout.Tab tab) {
         }
     };
-    private View.OnTouchListener floatbutton_listener=new View.OnTouchListener() {
+    private View.OnClickListener floatbutton_listener=new View.OnClickListener() {
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
+        public void onClick(View v) {
             if(currentTab==tab3){
-                v.performClick();
                 nested_view.fullScroll(NestedScrollView.FOCUS_DOWN);
-                return true;
-            }else{
-                return false;
+            }
+            if(currentTab==tab2){
+                nested_view.fullScroll(NestedScrollView.FOCUS_UP);
             }
         }
     };
-    void setTab2Text(){
-        tab2_fragment.setText();
-    }
+
     public static class MainHandler extends Handler{
         MsgReadyListener lst;
         MainHandler(MainHandler.MsgReadyListener listener){
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     }
     void startCameraService_mThread(){
         cameraService.start_mThread();
-        cameraService.open_Camera(0);
+        cameraService.open_Camera(pos);
     }
     void append_to_tab3_fragment(String msg){
         tab3_fragment.appendMsg(msg);
@@ -148,5 +149,10 @@ public class MainActivity extends AppCompatActivity {
         cameraService.interrupt_mThread();
 
     }
-
+    void reset_cameraService(){
+        cameraService=null;
+        cameraService = new CameraService(handler,this);
+        if(pos==1){pos=0;}
+        else{pos=1;}
+    }
 }

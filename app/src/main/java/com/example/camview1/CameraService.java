@@ -4,15 +4,19 @@ import android.content.Context;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CaptureRequest;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.Surface;
 
 import androidx.annotation.NonNull;
 
 
 class CameraService {
+
     CameraManager cameraManager;
+    CaptureRequest.Builder capture_builder;
     private int pos;
 
     public static abstract class StateCallback{
@@ -29,6 +33,7 @@ class CameraService {
         ui_handler = hnd;
         mContext = cnt;
         mThread = new Thread(mThread_runnable);
+        sendMsg("New Camera service object: "+this.toString());
     }
 
     private Runnable mThread_runnable = new Runnable() {
@@ -66,6 +71,7 @@ class CameraService {
     }
 
     void interrupt_mThread() {
+        cameraDevice.close();
         try{
             back_handler.getLooper().quitSafely();
             if(!mThread.isAlive()){sendMsg(mThread.getName() + " is dead");}
@@ -91,16 +97,19 @@ class CameraService {
                 sendMsg(e.toString());
             }
             sendMsg(msg);
+            create_captureReq_Builder();
         }
 
         @Override
         public void onDisconnected(@NonNull CameraDevice camera) {
             sendMsg("Disconnected :"+camera.getId() );
+            cameraDevice.close();
         }
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
             sendMsg("ERROR Code:"+(error)+", on camera id: "+camera.getId() );
+            cameraDevice.close();
         }
     };
 
@@ -145,5 +154,22 @@ class CameraService {
         }).start();
 
     }
+    void create_captureReq_Builder(){
 
+            back_handler.post(()->{
+                try {
+                    capture_builder =cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                    sendMsg("Capture buidler is initialized: "+capture_builder.toString());
+                } catch (CameraAccessException e) {
+                    sendMsg(e.toString());
+                }
+            });
+    }
+
+    public void addsurface_capture_builder(Surface surface) {
+        back_handler.post(()->{
+            capture_builder.addTarget(surface);
+            sendMsg("Surface added to builder"+surface);
+        });
+    }
 }

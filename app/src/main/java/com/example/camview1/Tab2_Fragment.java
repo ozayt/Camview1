@@ -1,6 +1,5 @@
 package com.example.camview1;
 
-import android.annotation.SuppressLint;
 import android.hardware.camera2.CameraCharacteristics;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,13 +25,13 @@ public class Tab2_Fragment extends Fragment {
     private NestedScrollView nestedview;
     private LinearLayout linearLayout;
     private CameraCharacteristics cameraChar;
-    private boolean added=false;
-    private List<CameraCharacteristics.Key> char_list;
+    private boolean cameraChar_is_inLayout =false;
+    private List<CameraCharacteristics.Key> raw_char_keys;
+    private List<String> avaible_types_string = new ArrayList<String>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Nullable
@@ -43,32 +42,23 @@ public class Tab2_Fragment extends Fragment {
             nestedview = (NestedScrollView) container;
             text = view.findViewById(R.id.tab2_text);
             linearLayout = view.findViewById(R.id.LinearLayout);
-
             ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment(Thread.currentThread().getName() + " :onCreateView Tab2_Fragment");
             firstcreated = true;
         }
-        if(cameraChar!=null & (!added)){
+        //Load the desired linearlayout ocntent
+        if(cameraChar!=null & (!cameraChar_is_inLayout)){
             addto_linearLayout(cameraChar.getKeys());
-            added=true;
+            cameraChar_is_inLayout =true;
         }
         return view;
     }
 
-    @SuppressLint("SetTextI18n")
-    void setText() {
-        text.setText("Tab 2 text is set now ");
-    }
-    void prepare_frag2(CameraCharacteristics cam){
+    void set_frag2_CameraCharacteristics(CameraCharacteristics cam){
         this.cameraChar = cam;
-
     }
-    void addto_linearLayout(List<CameraCharacteristics.Key<?>> keys ){
-//
-//        List<CameraCharacteristics.Key<?>> malist = camc.getKeys();
-//        for(CameraCharacteristics.Key<?> key :malist ){
-//            key.toString(
-//        }
-        char_list = new ArrayList<CameraCharacteristics.Key>();
+    private void addto_linearLayout(List<CameraCharacteristics.Key<?>> keys){
+
+        raw_char_keys = new ArrayList<CameraCharacteristics.Key>();
         int j = 0;
         for (CameraCharacteristics.Key<?> key :keys) {
                 if(((MainActivity)getContext())!=null) {
@@ -77,26 +67,55 @@ public class Tab2_Fragment extends Fragment {
                     btnTag.setText(key.toString());
                     btnTag.setId(j);
                     linearLayout.addView(btnTag);
-                    char_list.add(key);
+                    raw_char_keys.add(key);
                     final int finalJ = j;
+                    Class<?> c =cameraChar.get((raw_char_keys.get(finalJ))).getClass();
+                    if(!avaible_types_string.contains(c.toString())){
+                        avaible_types_string.add(c.toString());
+                    }
+
                     btnTag.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            text.setText(Integer.toString(v.getId()));
-                            ((Button)v).setText(cameraChar.get(char_list.get(finalJ)).toString());
-                            if(added){added=false;}
+                            Class<?> c =cameraChar.get((raw_char_keys.get(finalJ))).getClass();
+                            if(c.isArray()){
+                                text.setText(Integer.toString(v.getId())+ " is an ARRAY of ");
+                                if(c.getComponentType() ==int.class){
+                                    text.append("int[]");
+                                    int len =((int[])cameraChar.get(raw_char_keys.get(finalJ))).length;
+                                    text.append(" with lenght "+len);
+                                }else if(c.getComponentType() ==byte.class){
+                                    text.append("byte[]");
+                                    int len =((byte[])cameraChar.get(raw_char_keys.get(finalJ))).length;
+                                    text.append(" with lenght "+len);
+                                }else{
+                                    text.append(c.getComponentType().toString()+" not supported by this app");
+                                }
+
+//                                ((Button) v).setText(cameraChar.get(raw_char_keys.get(finalJ)).getClass().toString());
+                            }else {
+                                text.setText(Integer.toString(v.getId()));
+                                text.setText(v.getId()+ " is a "+ c.toString());
+                                if(Number.class.isAssignableFrom(c)){
+                                    text.append("Number:"+((Number)cameraChar.get(raw_char_keys.get(finalJ))).toString());
+                                }else{
+                                    text.append(":"+(cameraChar.get(raw_char_keys.get(finalJ))).toString());
+                                }
+//                                ((Button) v).setText(cameraChar.get(raw_char_keys.get(finalJ)).getClass().toString());
+                            }
+                            if(cameraChar_is_inLayout){
+                                cameraChar_is_inLayout =false;}
+
 
                         }
                     });
                     j++;
                 }
+
         }
-//        for (int i=0; i <10 ; i++){
-//            Button btnTag = new Button(getActivity().getApplicationContext());
-//            btnTag.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-//            btnTag.setText(i);
-//            btnTag.setId(i);
-//            linearLayout.addView(btnTag);
-//        }
+        for(String str: avaible_types_string){
+            text.append(" "+str);
+        }
+
     }
 }
