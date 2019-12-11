@@ -5,4 +5,5 @@
     <string name="tab3">Tab3</string>
     <string name="tab2_text">TAB 2 texti</string>
     <string name="tab3_text">Thread:msg</string>
+    <string name="load_camera_specs">Load Camera Specs</string>
 </resources>

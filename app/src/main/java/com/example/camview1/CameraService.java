@@ -45,6 +45,7 @@ class CameraService {
                 Looper.prepare();
                 back_handler = new Handler();
                 sendMsg("Leaving the lock");
+
             }
             sendMsg("Looper prepared and back_handler initialized, mThread is runing now");
             Looper.loop();
@@ -161,6 +162,7 @@ class CameraService {
                 try {
                     capture_builder =cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
                     sendMsg("Capture buidler is initialized: "+capture_builder.toString());
+
                 } catch (CameraAccessException e) {
                     sendMsg(e.toString());
                 }

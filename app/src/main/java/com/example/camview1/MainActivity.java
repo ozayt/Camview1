@@ -77,19 +77,15 @@ public class MainActivity extends AppCompatActivity {
             tabs_callback.onTabSelected(tab2);
             tabs_callback.onTabSelected(tab1);
         }
-        //Calling camera service here
-
     }
     TabLayout.OnTabSelectedListener tabs_callback = new TabLayout.OnTabSelectedListener() {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
-
             if(tab.equals(tab1)) {
                 currentTab=tab;
                 FragmentTransaction frag = fragmentManager.beginTransaction().replace(R.id.nestedview, tab1_fragment);
                 frag.commit();
             }
-
             if(tab.equals(tab2)){
                 currentTab=tab;
                 FragmentTransaction frag = fragmentManager.beginTransaction().replace(R.id.nestedview, tab2_fragment);
@@ -127,12 +123,21 @@ public class MainActivity extends AppCompatActivity {
 
             if(tab2_fragment.dir_level==0)super.onKeyDown(keyCode,event);
             else {
-                tab2_fragment.linearLayout.removeAllViews();
-                tab2_fragment.linearLayout.addView(tab2_fragment.text);
-                tab2_fragment.dir_level--;
-                tab2_fragment.get_root_mrm(tab2_fragment.most_recent_dir_id);
-                tab2_fragment.text.setText(tab2_fragment.most_recent_dir_id + " dir level " + tab2_fragment.dir_level);
-                tab2_fragment.addto_linearLayout(tab2_fragment.level_list, tab2_fragment.dir_level, tab2_fragment.most_recent_dir_id);
+                if(tab2_fragment.in_directory) {
+                    tab2_fragment.linearLayout.removeAllViews();
+                    tab2_fragment.linearLayout.addView(tab2_fragment.text);
+                    tab2_fragment.dir_level--;
+                    tab2_fragment.get_root_mrm(tab2_fragment.most_recent_dir_id);
+                    tab2_fragment.text.setText(tab2_fragment.most_recent_dir_id + " dir level " + tab2_fragment.dir_level);
+                    tab2_fragment.addto_linearLayout(tab2_fragment.level_list, tab2_fragment.dir_level, tab2_fragment.most_recent_dir_id);
+                }else{//leave file content
+                    tab2_fragment.linearLayout.removeAllViews();
+                    tab2_fragment.linearLayout.addView(tab2_fragment.text);
+                    tab2_fragment.get_root_mrm(tab2_fragment.most_recent_dir_id);
+                    tab2_fragment.text.setText(tab2_fragment.most_recent_dir_id + " dir level " + tab2_fragment.dir_level);
+                    tab2_fragment.addto_linearLayout(tab2_fragment.level_list, tab2_fragment.dir_level, tab2_fragment.most_recent_dir_id);
+                    tab2_fragment.in_directory=true;
+                }
             }
             return true;
         }
@@ -174,7 +179,10 @@ public class MainActivity extends AppCompatActivity {
         if(pos==1){pos=0;}
         else{pos=1;}
     }
-    void frag2_scan_dir(){
-        tab2_fragment.scan_dir(tab2_fragment.getRaw_char_keys());
+    void frag2_scan_cameraChar_keys(){
+        tab2_fragment.scan_CameraChar_keys(tab2_fragment.getRaw_camera_char_keys());
+    }
+    void frag2_scan_cap_request_keys(){
+//        tab2_fragment.scan_capres_keys(tab2_fragment.get
     }
 }

@@ -52,7 +52,7 @@
         android:gravity="bottom"
         android:scrollbars="vertical"
         android:verticalScrollbarPosition="right"
-        app:layout_anchor="@+id/nestedview"
+        app:layout_anchor="nestedview"
         app:layout_anchorGravity="center"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 

@@ -4,12 +4,14 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -19,7 +21,7 @@ import java.util.Objects;
 public class Tab1_Fragment extends Fragment {
     private Boolean firstcreated = false ;
     private View view;
-
+    SurfaceView surfaceView;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,18 +70,20 @@ public class Tab1_Fragment extends Fragment {
                         button_for_interrupt.setEnabled(true);
                         cam_char_button.setEnabled(true);
                         button_to_start_mThread.setEnabled(false);
+
                     }
                 }
             });
             cam_char_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity) Objects.requireNonNull(getActivity())).frag2_scan_dir();
+                    ((MainActivity) Objects.requireNonNull(getActivity())).frag2_scan_cameraChar_keys();
                 }
             });
             ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment(Thread.currentThread().getName()+" :onCreateView Tab1_Fragment");
+            surfaceView = view.findViewById(R.id.surfaceView);
 
-            firstcreated=true;
+
         }
         return view;
     }
