@@ -6,11 +6,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.hardware.camera2.CameraCharacteristics;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import android.util.Size;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -33,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
     TabLayout.Tab currentTab;
     FloatingActionButton floatbutton;
-    private int pos=1;
+
+    private int pos=0;
+    private boolean recording=false;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -48,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
                     append_to_tab3_fragment(message);
                 }else if(msg.what==MainHandler.CameraCharacteristics){
                     tab2_fragment.set_frag2_CameraCharacteristics((CameraCharacteristics)msg.obj); // Extract CameraCharacteristics from msg
+                }else if(msg.what==MainHandler.CAPTURE_CALLBACK_MSG){
+                    tab1_fragment.fps();
+                }else if(msg.what==MainHandler.BITMAP_IMAGE){
+                    tab1_fragment.print_bitmap((Bitmap)msg.obj);
+                }else if(msg.what==MainHandler.SET_300_SURFAC){
+                    tab1_fragment.setSurfaceView_size_300();
                 }
             }
         });
@@ -114,6 +124,15 @@ public class MainActivity extends AppCompatActivity {
             if(currentTab==tab2){
                 nested_view.fullScroll(NestedScrollView.FOCUS_UP);
             }
+            if(currentTab==tab1){
+                if(!recording) {
+                    cameraService.buildRequest_CreateCapSes_thenStartRepeatingReq();
+                    recording=true; //recording is actully connected
+                }else{
+                    cameraService.connect_to_Server("192.168.13.171",5557);
+                    cameraService.buildRequest_CreateCapSes_thenStartRepeatingReq();
+                }
+            }
         }
     };
 
@@ -151,6 +170,9 @@ public class MainActivity extends AppCompatActivity {
         }
         public static final int STRING = 0;
         public static final int CameraCharacteristics = 1 ;
+        public static final int CAPTURE_CALLBACK_MSG = 2;
+        public static final int BITMAP_IMAGE = 3;
+        public static final int SET_300_SURFAC = 4 ;
         public interface MsgReadyListener{
             /**
              * @param msg incoming msg
@@ -175,9 +197,8 @@ public class MainActivity extends AppCompatActivity {
     }
     void reset_cameraService(){
         cameraService=null;
-        cameraService = new CameraService(handler,this);
-        if(pos==1){pos=0;}
-        else{pos=1;}
+        cameraService = new CameraService(handler,this,this);
+
     }
     void frag2_scan_cameraChar_keys(){
         tab2_fragment.scan_CameraChar_keys(tab2_fragment.getRaw_camera_char_keys());
@@ -185,4 +206,9 @@ public class MainActivity extends AppCompatActivity {
     void frag2_scan_cap_request_keys(){
 //        tab2_fragment.scan_capres_keys(tab2_fragment.get
     }
+    public Size[] get_surfaceview_size(){
+        return tab2_fragment.get_surfaceview_size();
+    }
+
+
 }

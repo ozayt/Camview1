@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="4">
+    android:layout_height="match_parent">
 
     <Button
         android:id="@+id/button6"
@@ -21,9 +20,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="Button"
+        app:layout_constraintBottom_toTopOf="@id/guideline_Vert"
         app:layout_constraintEnd_toStartOf="@id/guideline333"
         app:layout_constraintStart_toStartOf="@id/guideline0"
-        app:layout_constraintBottom_toTopOf="@id/guideline_Vert"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -42,28 +41,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_begin="75dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_Vert2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_begin="147dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline333"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.333" />
+        app:layout_constraintGuide_percent="0.33" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="0dp" />
+        app:layout_constraintGuide_percent="0.00243309" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline666"
@@ -112,8 +111,7 @@
         android:id="@+id/surfaceView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 

@@ -52,9 +52,12 @@
         android:gravity="bottom"
         android:scrollbars="vertical"
         android:verticalScrollbarPosition="right"
-        app:layout_anchor="nestedview"
+
         app:layout_anchorGravity="center"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+
+
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatbutton"

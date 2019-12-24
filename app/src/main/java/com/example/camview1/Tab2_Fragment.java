@@ -1,8 +1,10 @@
 package com.example.camview1;
 
+import android.graphics.YuvImage;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CaptureRequest;
 import android.os.Bundle;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import java.security.Key;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -49,6 +52,16 @@ public class Tab2_Fragment extends Fragment {
             text = view.findViewById(R.id.tab2_text);
             linearLayout = view.findViewById(R.id.LinearLayout);
             ((MainActivity) Objects.requireNonNull(getActivity())).append_to_tab3_fragment(Thread.currentThread().getName() + " :onCreateView Tab2_Fragment");
+            Button button_connect = view.findViewById(R.id.button_connect);
+            Button button_hello = view.findViewById(R.id.button_hello);
+            button_hello.setEnabled(false);
+            button_connect.setOnClickListener(v -> {
+                ((MainActivity)getActivity()).cameraService.connect_to_Server("192.168.0.12",5557);
+                button_hello.setEnabled(true);
+            });
+            button_hello.setOnClickListener(v -> {
+                ((MainActivity)getActivity()).cameraService.sayhello_to_Sever();
+            });
             firstcreated = true;
         }
         //Load the desired linearlayout ocntent
@@ -290,6 +303,18 @@ public class Tab2_Fragment extends Fragment {
                 }
             }
 
+        }else{ //not an array
+            text.append(cameraChar.get(key).toString());
         }
+
+    }
+    public Size[] get_surfaceview_size(){
+//        Size[] sizes =cameraChar.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(256);
+//        Size biggestsize = new Size(0,0);
+//        for(Size size:sizes){
+//            if ((size.getWidth()<1088&biggestsize.getHeight()<=size.getHeight()))
+//            biggestsize =size ;
+//        }
+        return cameraChar.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(256);
     }
 }
